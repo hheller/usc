@@ -95,8 +95,8 @@ for i = 1:m
     %--------------------------------------%
     % Driving Force component from (2.6.4) %
     %--------------------------------------%
-    f((2*i)-1) = ((v0a(i)/tau) * e(i,1)) - (u((2*i)-1)/tau);
-    f((2*i)) = ((v0a(i)/tau) * e(i,2)) - (u((2*i))/tau);
+    f((2*i)-1) = ((v0a(i)/tau) * e(i,1)) - (u((2*i)-1)/tau);%v0a ist die gewünschte schnelligkeit, e die gewünschte bewgungsrichtung und u die aktuelle Geschw'keit der person i in X richtung
+    f((2*i)) = ((v0a(i)/tau) * e(i,2)) - (u((2*i))/tau);%... der Person i in y Richtung
     %---------------------------------------------------------------------%
     % Pedestrian Interactions from (2.6.8) - Summing all the interactions %
     %---------------------------------------------------------------------%
@@ -105,16 +105,16 @@ for i = 1:m
         if (i ~= j)
             dab = norm(x(i,:) - x(j,:));%Abstand von Person i zu Person j
             if (dab < VS)% wenn distanz innerhalb des Interaktionsbereich liegt
-                rab = r(i) + r(j);
-                nab = ((x(i,:) - x(j,:))/dab);
+                rab = r(i) + r(j);%summe der beiden radien der Personen
+                nab = ((x(i,:) - x(j,:))/dab);% nab: normalisierter Vektor, der von Person j zu Person i zeigt, dab: ist die Distanz der Massenzentren zweier Personen
                 fab = fab + ((A1a*exp((rab - dab)/B1a))*nab)...
                     *(lambda + (1 - lambda)*((1+(-nab*e(i,:)'))/2))...
                     + ((A2a*exp((rab - dab)/B2a))*nab);
             end
         end
     end
-    f((2*i)-1) = f((2*i)-1) + fab(1,1);
-    f((2*i)) = f((2*i)) + fab(1,2);
+    f((2*i)-1) = f((2*i)-1) + fab(1,1); %f: eigener Antrieb, um gewünschte gesch'keit zu haben, fab Kraft, die all die anderen Personen auf Person i ausüben in X richtung
+    f((2*i)) = f((2*i)) + fab(1,2); %in Y Richtung
     %---------------------------------------------------------------------%
     % Boundary Interaction component, this is analogous to the pedestrian %
     % interactions - infact the formula only needs different constants %
