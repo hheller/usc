@@ -55,7 +55,7 @@ if (K == 1)
     Y = [2*rand(1,m)+3.5]; %Zufallsvektor, welcher für alle m zwischen 3.5-5.5
 elseif (K == 2)
     way = 0;
-    Vx = zeros(1,m);
+    Vx = zeros(1,m); %es starten alle mit geschwindigkeit 0 in x und y richtung
     Vy = zeros(1,m);
     X = [25*rand(1,m/2)+25,25*rand(1,m/2)+50]; %Geändert, so dass alle von Anfang an im Spiel
     Y = [6*rand(1,m)+7.5];
@@ -83,7 +83,9 @@ elseif (K == 5)
     X = [35*rand(1,m)-30];
     Y = [2*rand(1,m)+0.5];
 end
+
 % Setting u - the initial position and velocity vector %
+
 for i = 1:m %2m*1 Matrix, mit den Elementen der beiden Geschwindigkeiten in x-und y-Richtung hintereinander (zuerst x, dann y)
     u((2*i)-1) = Vx(i);
     u((2*i)) = Vy(i);
@@ -160,14 +162,19 @@ end
 %----------------------------------------%
 % The solver for the system - here ode45 %
 %----------------------------------------%
-
+%options 1 setzt die optionen für's lösen der ode fest, zum bsp mit abstol
+%die absolute toleranz und retol die relative
 options1 = odeset('AbsTol',1d-3,'RelTol',1d-4);
 [t1,u1] = ode45(@fun5,tspan,start,options1);
-range(t1)
-range(u1)
+t1
+u1
 pause
-%Die Simulation gibt einen
-
+%Die Simulation gibt zwei Matrizen aus. t1 einfach alle zeitschritte übereinander
+%u1 sind analog der starbedingungen eine 4*m matrix folgender struktur
+%   ped links1 pedlinks2   pedrechts1 pedrechts2     pedlinks1     pedrechts1
+%t1   vx  vy    vx   vy     vx   vy     vx  vy        X    Y        X     Y
+%t2
+%t3
 
 %---------------------------------------%
 % Plotting the paths of the pedestrians %
