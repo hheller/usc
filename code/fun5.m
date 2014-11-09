@@ -100,14 +100,15 @@ for i = 1:m
     %---------------------------------------------------------------------%
     % Pedestrian Interactions from (2.6.8) - Summing all the interactions %
     %---------------------------------------------------------------------%
+    %Froce interaction am anfang 0
     fab = [0,0];
     for j = 1:m
-        if (i ~= j)
+        if (i ~= j)%abstand zu eigener person nicht berücksichtigen
             dab = norm(x(i,:) - x(j,:));%Abstand von Person i zu Person j
             if (dab < VS)% wenn distanz innerhalb des Interaktionsbereich liegt
                 rab = r(i) + r(j);%summe der beiden radien der Personen
                 nab = ((x(i,:) - x(j,:))/dab);% nab: normalisierter Vektor, der von Person j zu Person i zeigt, dab: ist die Distanz der Massenzentren zweier Personen
-                fab = fab + ((A1a*exp((rab - dab)/B1a))*nab)...
+                fab = fab + ((A1a*exp((rab - dab)/B1a))*nab)...             %Funktion, die aus dem abstand, radius, richtung, lambda die kraft ausdrückt
                     *(lambda + (1 - lambda)*((1+(-nab*e(i,:)'))/2))...
                     + ((A2a*exp((rab - dab)/B2a))*nab);
             end

@@ -1,10 +1,13 @@
 % Driving Force, Pedestrian interactions and boundary interactions %
 % dv/dt = f0a + fab + faB %
 %------------------------------------------------------------------------%
-
+% beschl=fziel+fpersonen+fboundaries
 clear all
 global m bdry p p1 p2 D way BDRY
 global tau v0a0 vmax r A1a A2a B1a B2a lambda A1 B1 VS dist
+%tau beschreibt den wunsch einer pers wieder auf ihre gewünschte geschw zu
+%beschleunigen (1/tau*differenz v ist gleich f0a)
+%dist ist abstand ab welchem ziel erreicht
 
 % Number of Pedestrians%
 m = input('Enter the number of Pedestrians in the system (must be even):');
@@ -57,7 +60,7 @@ elseif (K == 2)
     way = 0;
     Vx = zeros(1,m); %es starten alle mit geschwindigkeit 0 in x und y richtung
     Vy = zeros(1,m);
-    X = [25*rand(1,m/2)+25,25*rand(1,m/2)+50]; %Geändert, so dass alle von Anfang an im Spiel
+    X = [25*rand(1,m/2)+25 , 25*rand(1,m/2)+50]; %eine m langezeile, zuerst die m/2 linken, dann die rechten. Geändert, so dass alle von Anfang an im Spiel
     Y = [6*rand(1,m)+7.5];
 elseif (K == 3)
     way = 1;
@@ -140,7 +143,7 @@ if (K == 1)
     %auf höhe 1 und auf höhe 6. geplottet wird das ganze dann mit 'rx' kleinen
     %kreuzchen. Die erste Spalte ist die x-Achse, die zweite die Y-Achse
 elseif (K == 2)
-    bdry = [    [-50:0.1:150   ,    -50:0.1:150]'...
+    bdry = [    [-50:0.1:150   ,           -50:0.1:150]'...
         ,[6*ones(1,(200/0.1)+1)    ,    14*ones(1,(200/0.1)+1)]'];
     BDRY = 1;
 elseif (K == 3)
@@ -166,8 +169,7 @@ end
 %die absolute toleranz und retol die relative
 options1 = odeset('AbsTol',1d-3,'RelTol',1d-4);
 [t1,u1] = ode45(@fun5,tspan,start,options1);
-t1
-u1
+
 pause
 %Die Simulation gibt zwei Matrizen aus. t1 einfach alle zeitschritte übereinander
 %u1 sind analog der starbedingungen eine 4*m matrix folgender struktur
@@ -200,33 +202,25 @@ end
 % Plotting the pedestrian paths %
 %die jeweiligen Pfade der Fussgänger sind abgelegt in einer 2x2 Matrix u,
 %für jeden Zeitschritt einen x und y wert. es gibt
-for i = (2*m)+1:2:(4*m)
-    if (i<=3*m)
+for i = (2*m)+1:2:(3*m)
         plot(u1(:,i),u1(:,i+1),'b-')
-        if (K == 1)||(K == 3)
-            axis([0,20,0,10]);
-        elseif (K == 2)
+      
+      
             axis([25,75,0,20])
-        elseif K == 4
-            axis([0,40,0,40]);
-        elseif K == 5
-            axis([0,10,0,10]);
-        end
+       
+
+            
         hold on
-    else
+end
+   for i = (3*m)+1:2:(4*m)
         plot(u1(:,i),u1(:,i+1),'r-')
-        if (K == 3)||(K ==1)
-            axis([0,20,0,10]);
-        elseif (K == 2)
+      
             axis([25,75,0,20])
-        elseif K == 4
-            axis([0,40,0,40]);
-        elseif K == 5
-            axis([0,10,0,10]);
-        end
+       
+        
         hold on
     end
-end
+
 pause
 %-----------------------------------------------------------%
 % Making the Movie - plots the pedestrian positions at each %
@@ -253,27 +247,16 @@ for j = 1:length(t1)
     for i = (2*m)+1:2:(4*m)
         if (i<=3*m)
             plot(u1(j,i),u1(j,i+1),'bo')
-            if (K == 1)||(K == 3)
-                axis([0,20,0,10]);
-            elseif (K == 2)
+           
                 axis([25,75,0,20])
-            elseif K == 4
-                axis([0,40,0,40]);
-            elseif K == 5
-                axis([0,10,0,10]);
-            end
+        
             hold on
         else
             plot(u1(j,i),u1(j,i+1),'ro')
-            if (K == 3)||(K ==1)
-                axis([0,20,0,10]);
-            elseif (K == 2)
+            
                 axis([25,75,0,20])
-            elseif K == 4
-                axis([0,40,0,40]);
-            elseif K == 5
-                axis([0,10,0,10]);
-            end
+         
+           
             hold on
         end
     end
