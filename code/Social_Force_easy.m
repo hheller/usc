@@ -34,11 +34,11 @@ vmax = 1.3*v0a0;
 % Pedestrian radii %
 r = 0.3*ones(1,m);
 % Pedestrian Interaction constants from (2.6.8) %
-A1a = 0;
-A2a = 2;
-B1a = 0.3;
-B2a = 0.2;
-lambda = 0.75;
+A1a = 2;        %
+A2a = 2;        %
+B1a = 0.3;      %
+B2a = 0.2;      %
+lambda = 0.75; % Form der Reaktionsphäre
 % Boundary Interaction constants from (2.6.12) %
 A1 = 5; %60
 B1 = 0.1;
