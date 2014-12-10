@@ -1,9 +1,9 @@
-% Driving Force, Pedestrian interactions and boundary interactions %
+ % Driving Force, Pedestrian interactions and boundary interactions %
 % dv/dt = f0a + fab + faB %
 %------------------------------------------------------------------------%
 
 clear all
-global m bdry p p1 p2 M vspur
+global m bdry p p1 p2 M vspur 
 global tau r A1a A2a A3a A4a B1a B2a B3a B4a lambda A1 B1 VS VF1 VF2 VV1 VV2 
 global dt v01 v02 vmax1 vmax2 L ml mr k Av Bv line
 
@@ -46,18 +46,19 @@ for i=L+mr+1:m
 end
 
 % Pedestrian Interaction constants from (2.6.8) %
-A1a = 3;
-A2a = 6;
-A3a = 1;
-A4a = 0.1;
-B1a = 1;
-B2a = 1;
-B3a = 1.5;
-B4a = 1;
-lambda = 0.75;
+A1a = 0.02 ; %faktor
+A2a = 0.5;
+A3a = 0.0000035;
+A4a = .4;%faktor
+B1a = 5;%shape
+B2a = 0.7;
+B3a = 19.;
+B4a = 1.4 ;% shape
+lambda = 0.1;
 %Anziehungskraft der Velofahrer
-Av=4;
-Bv=5;
+Av=3;%4
+Bv=4;%5
+
 
 
 k = 0.7;  %Die Dämpfung in y-Richtung (senkrecht zum Ziel), null=absolute Dämpfung, 1 = keine Dämpfung
@@ -65,7 +66,7 @@ k = 0.7;  %Die Dämpfung in y-Richtung (senkrecht zum Ziel), null=absolute Dämpfu
 A1 = 5; %60
 B1 = 0.1;
 % Radius of Verlet Sphere %
-VS = 10;
+VS = 4;
 dt = 0.08; %Iterationszeit (in sekunden)
 M0 = 1;     %Masse der Fussgänger
 M1 = 2*M0;   %Masse der Velofahrer
@@ -127,6 +128,11 @@ for i = 1:m %u wird erweritert zu einem 4m*1-Vektor wobei in den 2m-neuen Elemen
     u((2*m)+(2*i)-1) = X(i);
     u((2*m)+(2*i)) = Y(i);
 end
+   for i= 1:m;
+    u(4*m+i) = 0;
+    end
+
+
 start = u;
 %----------------------------------------------------------------------%
 % Desired destination - p is initially set as a waypoint (if required) %
@@ -172,7 +178,7 @@ start = u;
 %die absolute toleranz und retol die relative
 %options1 = odeset('AbsTol',1d-3,'RelTol',1d-4);
 %[t1,u1] = ode45(@fun5,tspan,start,options1); %tspan = [0 T], start, 4m*1 wobei in den ersten 2m die startgeschwindigkeiten und in den 2ten 2m die startpositionen
-[t1,O]=Iteration_master(T,start);
+[t1,O,unfalltotal, unfallorttotal]=Iteration_master(T,start);
 
 %t1 beihnaltet einen spaltevektor mit allen Iterationszeitschritten
 %O beinhaltet die Koordinaten von jeder Person zu jedem Zeitpunkt
@@ -206,6 +212,9 @@ pause
 % Plotting the pedestrian paths %
 %die jeweiligen Pfade der Fussgänger sind abgelegt in einer 2x2 Matrix u,
 %für jeden Zeitschritt einen x und y wert. es gibt
+unfalltotal = unfalltotal/2
+ufallorttotal = unfallorttotal
+testanzahl = length(unfallorttotal); 
 
 for i = 1:2:(2*m)
     if (i<=2*ml)
