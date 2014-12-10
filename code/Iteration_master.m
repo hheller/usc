@@ -1,4 +1,4 @@
-function [t,U] = Iteration_master(T,start)
+function [t,U,unfalltotal,unfallorttotal] = Iteration_master(T,start)
 global m dt k M 
 %T, die Simmulationsdauer
 %dt, die Iterationsgenauigkeit
@@ -6,11 +6,13 @@ global m dt k M
 t=[0:dt:T]';    %der dt-Zeitvektor mit allen Iterationszeitschritten
 U=zeros(length(t),2*m);   %in U werden die Koordianten von jeder Person zu jedem Zeitpunkt abgespeichert
 u=start;    %in u werden immer die aktuellen Koordinaten und Geschwindigkeiten abgespeichert. u=start für (t=0)
-
+unfalltotal = 0;
+unfallorttotal = zeros(0,2);
+uv = zeros(1,m);
 
 i=1;    %Hier wird der Fall t=0 separat betrachtet, um auszuschliessen, dass überdimensional grosse Kräfte bei ungünstiger Anfangsbedingung entstehen
 
-    f=fun5_master(t(i),u);     %f, ein 2m*1-Kräftevektor. 
+    [f,unfalltotal,unfallorttotal,uv] = fun5_master(t(i),u,unfalltotal, unfallorttotal,uv);     %f, ein 2m*1-Kräftevektor. 
     fd = zeros(1,2*m);    %Eine Dämpfung nach fd=-k*v in vertikale Richtung, weil der Mensch von sich aus die Richtung senkrecht zum Ziel zu bremsen beginnt.
     for j=2:2:2*m
        fd(j)= u(j)*-k;   %nur die y-komponente erhält eine Dämfpung proportional zur aktuellen Geschwindigkeit in y-Richtung
@@ -35,8 +37,9 @@ i=1;    %Hier wird der Fall t=0 separat betrachtet, um auszuschliessen, dass übe
 
 
 
+
 for i=2:length(t)
-    f=fun5_master(t(i),u);     %f, ein 2m*1-Kräftevektor. 
+    [f,unfalltotal, unfallorttotal, uv] = fun5_master(t(i),u,unfalltotal, unfallorttotal, uv);     %f, ein 2m*1-Kräftevektor. 
   %Eine Dämpfung in vertikale Richtung, weil der Mensch von sich aus die Richtung senkrecht zum Ziel zu bremsen beginnt.
     for j=2:2:2*m
        u(j)=u(j)*k;   %nur die y-komponente wird um den Faktor k (zwischen null und eins) gedämpft
@@ -51,5 +54,8 @@ for i=2:length(t)
     u(1:2*m) = u(1:2*m) + dv;    %die Geschwindikgeitsänderung wird zur vorherigen Geschwindigkeit addiert
     u(2*m+1:4*m)=u(2*m+1:4*m)+u(1:2*m)*dt;   %Die Ortsänderung do=v*dt wird zum ort hinzuaddiert
     U(i,:) = u(2*m+1:4*m);  %der Ort zum Zeitpunkt t(i) wird in U abgespeichert auf der i-ten Zeile
+    unfalltotal = unfalltotal;
+    unfallorttotal = unfallorttotal;
+    uv = uv;
 end
     %die Koordinaten zu jedem Zeitpunkt von jeder Person wird als Funktionswert zurücktgegeben
