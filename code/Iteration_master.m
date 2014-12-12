@@ -1,5 +1,5 @@
-function [t,U,unfalltotal,unfallorttotal] = Iteration_master(T,start)
-global m dt k M 
+function [t,U,unfalltotal,unfallorttotal,Z] = Iteration_master(T,start)
+global m ml L mr dt k M 
 %T, die Simmulationsdauer
 %dt, die Iterationsgenauigkeit
 %start, beinhaltet die Anfangskoordinaten und Geschwindikgeiten (für t=0)
@@ -54,8 +54,39 @@ for i=2:length(t)
     u(1:2*m) = u(1:2*m) + dv;    %die Geschwindikgeitsänderung wird zur vorherigen Geschwindigkeit addiert
     u(2*m+1:4*m)=u(2*m+1:4*m)+u(1:2*m)*dt;   %Die Ortsänderung do=v*dt wird zum ort hinzuaddiert
     U(i,:) = u(2*m+1:4*m);  %der Ort zum Zeitpunkt t(i) wird in U abgespeichert auf der i-ten Zeile
+    
     unfalltotal = unfalltotal;
     unfallorttotal = unfallorttotal;
     uv = uv;
+    
 end
     %die Koordinaten zu jedem Zeitpunkt von jeder Person wird als Funktionswert zurücktgegeben
+
+%Padestrians%    
+    a=0;
+    for i=1:ml %Nur Fussgänger von links
+        if(U(length(t),2*i-1)>60);  %Die x-Koordinate der i-ten Person
+            a=a+1;
+        end
+    end
+    for i=L+1:mr %Nur Fussgänger von rechts
+        if(U(length(t),2*i-1)<30);  %Die x-Koordinate der i-ten Person
+            a=a+1;
+        end
+    end
+    
+    
+%Biker%
+    b=0;
+    for i=ml+1:L %Nur Velofahrer von links
+        if(U(length(t),2*i-1)>60);  %Die x-Koordinate der i-ten Person 
+            b=b+1;
+        end
+    end
+    for i=L+mr+1:m %Nur Fussgänger von rechts
+        if(U(length(t),2*i-1)<30);  %Die x-Koordinate der i-ten Person
+            b=b+1;
+        end
+    end
+    Z=[a,b]
+
