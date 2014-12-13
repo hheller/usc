@@ -1,0 +1,10 @@
+Number of Pedestrians, coming from left hand: 20
+Number of Pedestrians, coming from right hand: 20
+Number of Bikers, coming form left hand: 5
+Number of Bikers, coming from right hand: 5
+Length of the simulation (in seconds): 20
+Bikeline? 1 for yes or 0 for no: 0
+Seed of random generator:
+Type: twister
+Seed: 0
+State: [625x1 uint32]SLIPSTREAMFORCES TURNED OFF

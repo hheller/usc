@@ -1,0 +1,10 @@
+Number of Pedestrians, coming from left hand: 26
+Number of Pedestrians, coming from right hand: 14
+Number of Bikers, coming form left hand: 7
+Number of Bikers, coming from right hand: 3
+Length of the simulation (in seconds): 20
+Bikeline? 1 for yes or 0 for no: 1
+Seed of random generator:
+Type: twister
+Seed: 0
+State: [625x1 uint32]
